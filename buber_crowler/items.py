@@ -11,7 +11,7 @@ from scrapy.loader.processors import TakeFirst, MapCompose, Join
 
 
 class AdItem(scrapy.Item):
-    id = scrapy.Field()
+    _id = scrapy.Field()
     price = scrapy.Field()
     title = scrapy.Field()
     city = scrapy.Field()

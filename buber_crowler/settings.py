@@ -66,7 +66,11 @@ ROBOTSTXT_OBEY = True
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'buber_crowler.pipelines.BuberCrowlerPipeline': 300,
+   'buber_crowler.pipelines.MongoPipeline': 400,
 }
+
+MONGO_URL='mongodb://localhost:27017/buber'
+MONGO_DATABASE='buber'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
