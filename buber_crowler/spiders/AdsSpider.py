@@ -14,7 +14,10 @@ class AdsCrowler(scrapy.Spider):
     name = "ads"
 
     start_urls = [
-        base_url + "/greater-toronto/"
+        # base_url + "/greater-toronto/"
+        base_url + "/metro-vancouver/vancouver/",
+        base_url + "/calgary/calgary/",
+        base_url + "/nova-scotia/halifax/"
     ]
 
     def parse_profile(self, response):
