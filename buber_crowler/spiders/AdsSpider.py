@@ -70,7 +70,7 @@ class AdsCrowler(scrapy.Spider):
         for group in groups:
             loader = AdItemLoader()
             id = group.css('::attr(id)').re_first('(\d+)')
-            loader.add_value('id', str(id))
+            loader.add_value('_id', str(id))
 
             url = group.css('a.mainlist-item::attr(href)').extract_first()
             loader.add_value('url', url)
