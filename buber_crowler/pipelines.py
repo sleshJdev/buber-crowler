@@ -19,7 +19,6 @@ class BuberCrowlerPipeline(object):
             raise DropItem("Ad {} doesn't contain phone suffix {} in title {}.".format(item['url'], phoneSuffix, title))
 
         item['birthyear'] = datetime.utcnow().date() - item['age']
-        item['_source'] = 'leolist' # service field used to identify the way in which it was created
         url = item['url']
         pattern = '((?:\d+_)+{})'.format(phoneSuffix)
         rawPhone = re.search(pattern, url).group()
