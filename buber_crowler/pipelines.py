@@ -17,6 +17,8 @@ class BuberCrowlerPipeline(object):
         if phoneSuffix not in title:
             raise DropItem("Ad {} doesn't contain phone suffix {} in title {}.".format(item['url'], phoneSuffix, title))
 
+        # service property used by spring data mongo when loading document to know on which entity document mapped
+        item['_class'] = 'com.slesh.gallery.persistence.model.Ad'
         url = item['url']
         pattern = '((?:\d+_)+{})'.format(phoneSuffix)
         rawPhone = re.search(pattern, url).group()

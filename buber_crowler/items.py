@@ -26,6 +26,7 @@ class AdItem(scrapy.Item):
     phoneSuffix = scrapy.Field()
     photos = scrapy.Field()
     avatar = scrapy.Field()
+    _class = scrapy.Field()
 
 
 class AdItemLoader(ItemLoader):
