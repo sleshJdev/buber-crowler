@@ -18,7 +18,7 @@ class BuberCrowlerPipeline(object):
         if phoneSuffix not in title:
             raise DropItem("Ad {} doesn't contain phone suffix {} in title {}.".format(item['url'], phoneSuffix, title))
 
-        item['birthyear'] = datetime.utcnow().date() - item['age']
+        item['birthyear'] = datetime.utcnow().date().year - item['age']
         url = item['url']
         pattern = '((?:\d+_)+{})'.format(phoneSuffix)
         rawPhone = re.search(pattern, url).group()
