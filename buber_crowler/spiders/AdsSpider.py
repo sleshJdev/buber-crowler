@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 import scrapy
 from scrapy.exceptions import DropItem
@@ -49,7 +50,7 @@ class AdsCrowler(scrapy.Spider):
             if label == 'Name'.lower():
                 key = 'name'
             elif label == 'Age'.lower():
-                key = 'age'
+                key = 'birthyear'
             elif label == 'City'.lower():
                 key = 'city'
             elif label == 'Ethnicity'.lower():
@@ -65,6 +66,9 @@ class AdsCrowler(scrapy.Spider):
                 value = user_data.css('.value [itemprop=addressLocality]::text').extract_first()
             elif key == 'price':
                 value = user_data.css('.value [itemprop=price]::text').extract_first()
+            elif key == 'birthyear':
+                age = int(user_data.css('.value::text').extract_first())
+                value = datetime.utcnow().date().year - age
             else:
                 value = user_data.css('.value::text').extract_first()
 
@@ -74,7 +78,7 @@ class AdsCrowler(scrapy.Spider):
 
     def parse_page(self, response):
         groups = response.selector.css('div[id=main_list] > div.group')
-        for group in groups:
+        for group in groups[:2]:
             loader = AdItemLoader()
             id = group.css('::attr(id)').re_first('(\d+)')
             loader.add_value('_id', str(id))
@@ -85,6 +89,6 @@ class AdsCrowler(scrapy.Spider):
 
     def parse(self, response):
         pages = int(response.selector.css('.pagination li:last-of-type > a::text').extract_first())
-        for page in range(1, pages):
+        for page in range(1, 2):
             url = response.request.url + "?page=" + str(page)
             yield response.follow(url, callback=self.parse_page)

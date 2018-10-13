@@ -15,8 +15,7 @@ class AdItem(scrapy.Item):
     price = scrapy.Field()
     title = scrapy.Field()
     city = scrapy.Field()
-    age = scrapy.Field()
-    birthday = scrapy.Field()
+    birthyear = scrapy.Field()
     name = scrapy.Field()
     ethnicity = scrapy.Field()
     availability = scrapy.Field()
@@ -35,7 +34,6 @@ class AdItemLoader(ItemLoader):
         super().__init__(AdItem())
 
     default_output_processor = TakeFirst()
-    age_in = MapCompose(int)
     price_in = MapCompose(int)
     description_in = MapCompose(str.strip)
     description_out = Join(u'\n')

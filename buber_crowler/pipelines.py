@@ -5,7 +5,6 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import re
-from datetime import datetime
 
 import pymongo
 from scrapy.exceptions import DropItem
@@ -18,7 +17,6 @@ class BuberCrowlerPipeline(object):
         if phoneSuffix not in title:
             raise DropItem("Ad {} doesn't contain phone suffix {} in title {}.".format(item['url'], phoneSuffix, title))
 
-        item['birthyear'] = datetime.utcnow().date().year - item['age']
         url = item['url']
         pattern = '((?:\d+_)+{})'.format(phoneSuffix)
         rawPhone = re.search(pattern, url).group()
