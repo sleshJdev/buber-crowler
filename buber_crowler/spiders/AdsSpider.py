@@ -78,7 +78,7 @@ class AdsCrowler(scrapy.Spider):
 
     def parse_page(self, response):
         groups = response.selector.css('div[id=main_list] > div.group')
-        for group in groups[:2]:
+        for group in groups:
             loader = AdItemLoader()
             id = group.css('::attr(id)').re_first('(\d+)')
             loader.add_value('_id', str(id))
@@ -89,6 +89,6 @@ class AdsCrowler(scrapy.Spider):
 
     def parse(self, response):
         pages = int(response.selector.css('.pagination li:last-of-type > a::text').extract_first())
-        for page in range(1, 2):
+        for page in range(1, pages):
             url = response.request.url + "?page=" + str(page)
             yield response.follow(url, callback=self.parse_page)
