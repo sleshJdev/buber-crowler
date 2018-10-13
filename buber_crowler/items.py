@@ -7,7 +7,7 @@
 
 import scrapy
 from scrapy.loader import ItemLoader
-from scrapy.loader.processors import TakeFirst, MapCompose, Join
+from scrapy.loader.processors import TakeFirst, MapCompose, Join, Identity
 
 
 class AdItem(scrapy.Item):
@@ -16,6 +16,7 @@ class AdItem(scrapy.Item):
     title = scrapy.Field()
     city = scrapy.Field()
     age = scrapy.Field()
+    birthday = scrapy.Field()
     name = scrapy.Field()
     ethnicity = scrapy.Field()
     availability = scrapy.Field()
@@ -24,6 +25,9 @@ class AdItem(scrapy.Item):
     description = scrapy.Field()
     phone = scrapy.Field()
     phoneSuffix = scrapy.Field()
+    photos = scrapy.Field()
+    avatar = scrapy.Field()
+    _source = scrapy.Field()
 
 
 class AdItemLoader(ItemLoader):
@@ -38,3 +42,4 @@ class AdItemLoader(ItemLoader):
     description_out = Join(u'\n')
     tagline_in = MapCompose(str.strip)
     tagline_out = Join(u'\n')
+    photos_out = MapCompose(Identity())

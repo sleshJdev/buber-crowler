@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import re
+from datetime import datetime
 
 import pymongo
 from scrapy.exceptions import DropItem
@@ -17,9 +18,13 @@ class BuberCrowlerPipeline(object):
         if phoneSuffix not in title:
             raise DropItem("Ad {} doesn't contain phone suffix {} in title {}.".format(item['url'], phoneSuffix, title))
 
+        item['birthyear'] = datetime.utcnow().date() - item['age']
+        item['_source'] = 'leolist' # service field used to identify the way in which it was created
         url = item['url']
         pattern = '((?:\d+_)+{})'.format(phoneSuffix)
-        item['phone'] = re.search(pattern, url).group().replace('_', '-')
+        rawPhone = re.search(pattern, url).group()
+        phone = re.sub("[^0-9]", "", rawPhone)
+        item['phone'] = phone
         return item
 
 
@@ -41,7 +46,7 @@ class MongoPipeline(object):
         self.client = pymongo.MongoClient(self.url)
         self.db = self.client[self.db_name]
 
-    def close_spider(self):
+    def close_spider(self, spider):
         self.client.close()
 
     def process_item(self, item, spider):

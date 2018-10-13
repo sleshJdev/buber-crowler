@@ -14,10 +14,11 @@ class AdsCrowler(scrapy.Spider):
     name = "ads"
 
     start_urls = [
-        # base_url + "/greater-toronto/"
+        base_url + "/greater-toronto/",
         base_url + "/metro-vancouver/vancouver/",
         base_url + "/calgary/calgary/",
-        base_url + "/nova-scotia/halifax/"
+        base_url + "/nova-scotia/halifax/",
+        base_url + "/greater-toronto/city-toronto/"
     ]
 
     def parse_profile(self, response):
@@ -25,12 +26,18 @@ class AdsCrowler(scrapy.Spider):
 
         ad = response.selector.css('#ad')
         desc = ad.css('#item-desc')
-        address = response.css('.right-contacts-container [class*="icon-phone"] + strong > .contacts-view-btn::text')
+        rawPhoneSuffix = response.css('.right-contacts-container [class*="icon-phone"] + strong .contacts-view-btn::text').extract_first()
+        if not rawPhoneSuffix:
+            rawPhoneSuffix = response.css('.ad-description-container .contacts-view-btn::text').extract_first()
 
+        if rawPhoneSuffix:
+            loader.add_value('phoneSuffix', re.sub("[^0-9]", "", rawPhoneSuffix))
+
+        loader.add_value('avatar', ad.css('.in .pic img::attr(src)').extract_first())
         loader.add_value('title', ad.css('.in .head [itemprop=name]::text').extract_first())
         loader.add_value('tagline', desc.css('.tagline::text').extract_first())
         loader.add_value('description', desc.css('.ad-description-container *::text').extract())
-        loader.add_value('phoneSuffix', re.sub("[^0-9]", "", address.extract_first()))
+        loader.add_value('photos', ad.css('.account-photos__item img::attr(src)').extract())
 
         user_data_items = ad.css('.info .user-data')
         for user_data in user_data_items:
@@ -78,7 +85,6 @@ class AdsCrowler(scrapy.Spider):
 
     def parse(self, response):
         pages = int(response.selector.css('.pagination li:last-of-type > a::text').extract_first())
-        self.parse_page(response)
-        for page in range(2, pages):
+        for page in range(1, pages):
             url = response.request.url + "?page=" + str(page)
             yield response.follow(url, callback=self.parse_page)
